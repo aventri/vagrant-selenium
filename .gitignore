@@ -1,0 +1,4 @@
+.vagrant
+
+install_log
+*.log

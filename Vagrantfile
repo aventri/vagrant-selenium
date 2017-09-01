@@ -1,14 +1,16 @@
-VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/trusty64"
-  config.vm.box_url = 'https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box'
-  
   config.vm.network :forwarded_port, guest:4444, host:4444
-  config.vm.network :private_network, ip: "192.168.33.10"
-  config.vm.provision "shell", path: "script.sh"
+  config.vm.network :private_network, type: "dhcp"
 
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
+    vb.customize ['modifyvm', :id, '--natdnshostresolver1', "off"]
+    vb.customize ['modifyvm', :id, '--memory', "512"]
+    vb.customize ['modifyvm', :id, '--cpus', "2"]
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
   end
+
+  config.vm.provision "shell", path: "setup.sh", privileged: true
 end
